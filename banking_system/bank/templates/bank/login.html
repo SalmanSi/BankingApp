@@ -1,4 +1,4 @@
-{%extends "bank/layout.html"%}
+{% extends "bank/layout.html" %}
 {% block body %}
 <div class="login-container">
     <h2>Login</h2>
@@ -16,4 +16,6 @@
         <button type="submit">Login</button>
     </form>
 </div>
-{%endblock%}
+<a href="{% url 'register' %}">Register</a>
+
+{% endblock %}
