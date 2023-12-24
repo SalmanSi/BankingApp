@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import redirect
+from django.db import connection
 # Create your views here.
 
 def index(request):
@@ -53,3 +54,26 @@ def register_view(request):
 
     return render(request,"bank/register.html")
 
+def create_account_view(request):
+
+    with connection.cursor() as cursor:
+        cursor.execute("select * from branches")
+        branches=cursor.fetchall()
+        print(branches)
+    
+    if request.method=="POST":
+        B_ID=request.POST["branch"]
+        pin=request.POST["pin"]
+        
+        # Use the authenticated user's username
+        username = request.user.username
+
+        # Call the stored procedure
+        with connection.cursor() as cursor:
+            cursor.callproc('set_Pin_Branch', [username, int(pin), int(B_ID)])
+            connection.commit()  # Commit the changes
+        return HttpResponseRedirect(reverse('index'))
+
+    return render(request,"bank/create_account.html",{
+        'branches':branches
+    })

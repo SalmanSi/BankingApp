@@ -1,0 +1,27 @@
+<!-- create_account.html -->
+<form action="{% url 'create_account' %}" method="post">
+
+    {% csrf_token %}
+
+    <label for="id_branch">Select a Branch:</label>
+    <select name="branch" id="id_branch">
+        {% for branch in branches %}
+            <option value="{{ branch.0 }}">{{ branch.1 }} - {{ branch.2 }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="id_pin">Enter your PIN:</label>
+    <input type="number" name="pin" id="id_pin" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Display available branches -->
+<h2>Available Branches</h2>
+<ul>
+    {% for branch in branches %}
+        {% if not forloop.first %}
+            <li>ID: {{ branch.0 }} | City: {{ branch.1 }} | Town: {{ branch.2 }} | Contact: {{ branch.3 }}</li>
+        {%endif%}
+    {% endfor %}
+</ul>
