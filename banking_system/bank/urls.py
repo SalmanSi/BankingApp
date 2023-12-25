@@ -11,4 +11,5 @@ urlpatterns=[
     path("transactions/",views.transaction_details_view,name="transaction_details"),
     path("transfer/",views.transfer_view,name="transfer_funds"),
     path("transfer/confirm",views.confirm_transfer_view,name="confirm_transfer"),
+    path("loan/application.",views.submit_loan_application_view,name="submit_loan_application"),
 ]

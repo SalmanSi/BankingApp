@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application</title>
+</head>
+<body>
+
+    {% if message %}
+    <p>Your loan application has been submitted successfully. We will review it shortly.</p>
+    {% else %}
+    <h1>Loan Application</h1>
+
+    <form action="{% url 'submit_loan_application' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="loan_amount">Loan Amount:</label>
+        <input type="number" name="loan_amount" id="loan_amount" required>
+
+        <br>
+
+        <label for="income_proof">Proof of Income (PDF):</label>
+        <input type="file" name="income_proof" id="income_proof" accept=".pdf" required>
+
+        <br>
+
+        <!-- Add more fields for additional information as needed -->
+        <label for="additional_info">Additional Information:</label>
+        <textarea name="additional_info" id="additional_info" rows="4"></textarea>
+
+        <br>
+
+        <input type="submit" value="Submit Application">
+    </form>
+    {% endif %}
+</body>
+<a href="{% url 'user' %}">user</a>
+</html>

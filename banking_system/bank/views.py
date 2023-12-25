@@ -163,3 +163,17 @@ def confirm_transfer_view(request):
             cursor.execute('update account set Balance =%s where AccountID=%s',[recipient_balance+amount,recipient_account_id])
             cursor.execute('insert into transaction(account_AccountID,Amount,Type,RecipientID,Purpose) values (%s,%s,%s,%s,%s)',[a_id,amount,"account To account",recipient_account_id,purpose])
         return render(request,"bank/transfer_funds.html",{"message":"Transaction Sucessful"})
+    
+
+
+def submit_loan_application_view(request):
+    if request.method=="POST":
+        amount=int(request.POST.get("loan_amount"))
+        proof_of_income=request.FILES.get("income_proof")
+        u_id=request.user.id 
+        a_id=utils.get_account_id(u_id)  
+        with connection.cursor() as cursor:
+            #add application 
+            cursor.execute('insert into loan_applications(Amount,account_AccountID,files) values(%s,%s,%s)',[amount,a_id,proof_of_income]) 
+            return render(request,"bank/submit_loan_application.html",{"message":"Loan Applied"})
+    return render(request,"bank/submit_loan_application.html")
