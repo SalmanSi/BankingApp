@@ -1,0 +1,46 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Funds</title>
+</head>
+<body>
+
+    <h1>Transfer Funds</h1>
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+    {% if r_name %}
+        <div>
+            <p>Recipient's Name: {{ r_name }}</p>
+            <form action="{% url 'confirm_transfer' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="amount" value="{{ amount }}">
+                <input type="hidden" name="recipient_account_id" value="{{ recipient_account_id }}">
+                <input type="hidden" name="purpose" value="{{ purpose }}">
+                <input type="submit" value="Confirm Transfer">
+            </form>
+        </div>
+    {% endif %}
+    
+    <form action="{% url 'transfer_funds' %}" method="post">
+        {% csrf_token %}
+
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" id="amount" required>
+
+        <br>
+
+        <label for="recipient_account_id">Recipient Account ID:</label>
+        <input type="number" name="recipient_account_id" id="recipient_account_id" required>
+
+        <br>
+
+        <label for="purpose">Purpose of Payment:</label>
+        <textarea name="purpose" id="purpose" rows="4" required></textarea>
+
+        <br>
+
+        <input type="submit" value="Transfer Funds">
+    </form>
+    <a href="{% url 'user' %}">user</a>
+</body>

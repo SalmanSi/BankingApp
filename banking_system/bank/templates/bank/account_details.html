@@ -1,0 +1,29 @@
+{% extends "bank/layout.html "%}
+
+{% block body %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+</head>
+<body>
+
+<h1>Account Details</h1>
+
+<ul>
+    <li><strong>Account ID:</strong> {{ detail.0 }}</li>
+    <li><strong>Balance:</strong> {{ detail.1 }}</li>
+    <li><strong>Open Date:</strong> {{ detail.2 }}</li>
+    <li><strong>Status:</strong> {{ detail.3 }}</li>
+    <li><strong>Account Pin:</strong> {{ detail.4 }}</li>
+    <li><strong>Branch ID:</strong> {{ detail.5 }}</li>
+</ul>
+
+</body>
+
+<a href="{% url 'user' %}">User</a>
+
+
+{% endblock %}

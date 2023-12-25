@@ -6,6 +6,14 @@
         <li>Username: {{request.user.username}}</li>
         <li>Email: {{request.user.email}}</li>
     </ul>
-    <a href="{% url 'logout' %}">Logout</a>
-    <a href="{% url 'create_account' %}">Set Account</a>
+<!-- Your navigation menu -->
+
+<ul>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+    <li><a href="{% url 'create_account' %}">Set Account</a></li>
+    <li><a href="{% url 'account_details' %}">View Account Details</a></li>
+    <li><a href="{% url 'transaction_details' %}">View Transaction Details</a></li>
+    <li><a href="{% url 'transfer_funds' %}">Transfer Funds</a></li>
+</ul>
+
 {% endblock %}

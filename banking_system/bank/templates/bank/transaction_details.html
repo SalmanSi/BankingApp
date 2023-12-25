@@ -1,0 +1,57 @@
+{% extends 'bank/layout.html' %}
+
+{% block body %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Details</title>
+</head>
+<body>
+
+    <h1>Transaction Details</h1>
+
+    {% if zipped_data %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Account ID</th>
+                    <th>Amount</th>
+                    <th>Time</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Recipient ID</th>
+                    <th>Recipient Name</th>
+                    <th>Location</th>
+                    <th>Purpose</th>
+  
+                    <!-- Add more headers based on your transaction details -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in zipped_data %}
+                {# Access data.0 for transaction and data.1 for recipient_name #}
+                    <tr>
+                        <td>{{ data.0.0 }}</td>
+                        <td>{{ data.0.1 }}</td>
+                        <td>{{ data.0.2 }}</td>
+                        <td>{{ data.0.3 }}</td>
+                        <td>{{ data.0.4 }}</td>
+                        <td>{{ data.0.5 }}</td>
+                        <td>{{ data.0.6 }}</td>
+                        <td>{{ data.1 }}</td>
+                        <td>{{ data.0.7 }}</td>
+                        <td>{{ data.0.8 }}</td>
+
+                        <!-- Add more cells based on your transaction details -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No transactions found.</p>
+    {% endif %}
+
+</body>
+<a href="{% url 'user' %}">User</a>
+{% endblock %}

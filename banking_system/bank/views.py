@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import redirect
 from django.db import connection
+
+from . import utils
 # Create your views here.
 
 def index(request):
@@ -77,3 +79,87 @@ def create_account_view(request):
     return render(request,"bank/create_account.html",{
         'branches':branches
     })
+
+
+def account_details_view(request):
+    status_value='active'
+    with connection.cursor() as cursor:
+        u_id=request.user.id
+        cursor.execute("select account_AccountID from auth_user_has_account where auth_user_id=%s",[u_id])
+        a_id=cursor.fetchone()
+        cursor.execute("update account set status =%s",[status_value])
+        cursor.execute("select * from account where AccountID=%s",[a_id])
+        detail=cursor.fetchone() #account details
+
+        
+    return render(request,"bank/account_details.html",{
+        "detail": detail
+    })
+
+
+def transaction_details_view(request):
+    u_id=request.user.id
+    recipient_list=[]
+    with connection.cursor() as cursor:
+        cursor.execute("select account_AccountID from auth_user_has_account where auth_user_id=%s",[u_id])
+        a_id=cursor.fetchone()
+        cursor.execute("select * from transaction where account_AccountID=%s",[a_id])
+        transactions=cursor.fetchall()
+        for transaction in transactions:
+            recipient_account_id=transaction[6]
+            recipient_list.append(utils.get_username_for_valid_aid(recipient_account_id)[0])
+        zipped_data = zip(transactions, recipient_list)
+    return render(request,'bank/transaction_details.html',{"zipped_data":zipped_data})
+
+def transfer_view(request):
+    if request.method=="POST":
+        u_id=request.user.id # senders user id
+        a_id=utils.get_account_id(u_id)# senders accountID
+        amount=int( request.POST["amount"] )
+        recipient_account_id=int(request.POST["recipient_account_id"])
+        purpose=request.POST["purpose"]
+        with connection.cursor() as cursor:
+            # find senders account id
+            cursor.execute("select account_AccountID from auth_user_has_account where auth_user_id=%s",[u_id])
+            sender_account_id=cursor.fetchone()
+            
+            # check senders balance
+            sender_balance=utils.get_balance(sender_account_id)
+            print(f"balance:{sender_balance}\n")
+            # checking for self transfer
+            if recipient_account_id==a_id:
+                return render(request,"bank/transfer_funds.html",{"message":"Cant send funds to youself!!"})
+            if amount>sender_balance:
+                #insufficient balance
+                return render(request,"bank/transfer_funds.html",{"message":"Insufficient balance"})
+            else:
+                with connection.cursor() as inner_cursor:
+                    # check if account is valid and get username of recipient
+                    recipient_u_name=utils.get_username_for_valid_aid(recipient_account_id)
+
+                    if recipient_u_name[0] is None:
+                        return render(request,"bank/transfer_funds.html",{"message":"Invalid Account ID"})
+                    # print the name of recipinet and ask user to confirm.
+                    # if user confirms, then do the transaction logic
+                    return render(request,"bank/transfer_funds.html",{"r_name":recipient_u_name[0],"amount": amount, "recipient_account_id": recipient_account_id, "purpose": purpose})
+
+    return render(request,"bank/transfer_funds.html")
+
+
+def confirm_transfer_view(request):
+    if request.method=="POST":
+        u_id=request.user.id # senders user id
+        amount=int(request.POST["amount"])
+        recipient_account_id=int(request.POST["recipient_account_id"])
+        purpose=request.POST["purpose"]
+        a_id=utils.get_account_id(u_id) # senders account ID
+
+        with connection.cursor() as cursor:
+            #deduct from sender
+            sender_balance=utils.get_balance(a_id)
+            cursor.execute('update account set Balance =%s where AccountID=%s',[sender_balance-amount,a_id])
+            #add to recievers balance
+            recipient_balance=utils.get_balance(recipient_account_id)
+            cursor.execute('update account set Balance =%s where AccountID=%s',[recipient_balance+amount,recipient_account_id])
+            cursor.execute('insert into transaction(account_AccountID,Amount,Type,RecipientID,Purpose) values (%s,%s,%s,%s,%s)',[a_id,amount,"account To account",recipient_account_id,purpose])
+        return render(request,"bank/transfer_funds.html",{"message":"Transaction Sucessful"})
