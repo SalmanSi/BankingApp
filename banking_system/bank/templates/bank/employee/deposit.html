@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .transfer-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transfer-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .transfer-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .transfer-container button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="transfer-container">
+        <h2>Deposit Form</h2>
+        {% if message %}
+        <div>{{ message }}</div>
+        {% endif %}
+        <form action="{% url 'deposit' %}" method="post"> <!-- Adjust the action attribute to the URL where you handle the form submission -->
+            {% csrf_token %}
+            <label for="senderAccountID">Sender Account ID:</label>
+            <input type="text" id="senderAccountID" name="senderAccountID" required>
+
+            <label for="recipientAccountID">Recipient Account ID:</label>
+            <input type="text" id="recipientAccountID" name="recipientAccountID" required>
+
+            <label for="Deposit Amount">Deposit Amount:</label>
+            <input type="text" id="depositAmount" name="depositAmount" required>
+
+            <label for="purpose">Purpose (Notes):</label>
+            <input type="text" id="purpose" name="purpose">
+
+            <button type="submit">Transfer</button>
+        </form>
+    </div>
+</body>
+<a href="{%url 'employee_dashboard'%}">Dashboard</a>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .withdrawal-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .withdrawal-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .withdrawal-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .withdrawal-container button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="withdrawal-container">
+        <h2>Withdrawal Form</h2>
+        {%if message %}
+        <div>{{message}}</div>
+        {% endif %}
+        <form action="{% url 'withdrawal'    %}" method="post"> <!-- Adjust the action attribute to the URL where you handle the form submission -->
+            {%csrf_token%}
+            <label for="accountNumber">Account Number:</label>
+            <input type="number" id="accountNumber" name="accountNumber" required>
+
+            <label for="pin">PIN:</label>
+            <input type="password" id="pin" name="pin" required>
+
+            <label for="withdrawalAmount">Withdrawal Amount:</label>
+            <input type="number" id="withdrawalAmount" name="withdrawalAmount" required>
+
+            <button type="submit">Withdraw</button>
+        </form>
+    </div>
+</body>
+<a href="{%url 'employee_dashboard'%}">Dashboard</a>
+</html>

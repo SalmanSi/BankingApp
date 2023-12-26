@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #555;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        .dashboard-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employee Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="{%url 'review_loan_applications' %}">Loan Applications</a>
+        <a href="{%url 'withdrawal'%}">Withdrawal</a>
+        <a href="{% url 'deposit' %}">Deposit</a>
+        <a href="{% url 'employee_logout' %}">Logout</a>
+    </nav>
+
+    <div class="dashboard-container">
+        <h2>Welcome, {{request.user.username}}!</h2>
+
+        <!-- Placeholder for dashboard content -->
+        <p>This is your employee dashboard. You can customize this section based on your application's features and requirements.</p>
+    </div>
+</body>
+</html>

@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import redirect
 from django.db import connection
+from django.utils import timezone
+from django.http import HttpResponse
 
 from . import utils
 # Create your views here.
@@ -170,10 +172,121 @@ def submit_loan_application_view(request):
     if request.method=="POST":
         amount=int(request.POST.get("loan_amount"))
         proof_of_income=request.FILES.get("income_proof")
+        description=request.POST.get("additional_info")
         u_id=request.user.id 
         a_id=utils.get_account_id(u_id)  
         with connection.cursor() as cursor:
             #add application 
-            cursor.execute('insert into loan_applications(Amount,account_AccountID,files) values(%s,%s,%s)',[amount,a_id,proof_of_income]) 
+            cursor.execute('insert into loan_applications(Amount,account_AccountID,files,description) values(%s,%s,%s,%s)',[amount,a_id,proof_of_income,description]) 
             return render(request,"bank/submit_loan_application.html",{"message":"Loan Applied"})
     return render(request,"bank/submit_loan_application.html")
+
+# employee funtionality
+
+def employee_login_view(request):
+    if request.method=="POST":
+        username=request.POST["username"]
+        password=request.POST["password"]
+        with connection.cursor() as cursor:
+            cursor.execute('select is_staff from auth_user where username= %s',[username])
+            is_staff=cursor.fetchone()
+            if not is_staff[0]:
+                 return render(request,"bank/employee/employee_login.html",{
+                "message":"Invalid credentials."
+            })
+        user=authenticate(request,username=username,password=password)
+        if user is not None:
+            login(request,user)
+            return HttpResponseRedirect(reverse('employee_dashboard'))
+        else:
+            return render(request,"bank/employee_login.html",{
+                "message":"Invalid credentials."
+            })
+    return render(request,"bank/employee/employee_login.html")
+
+def employee_logout_view(request):
+    logout(request)
+    return render(request,"bank/employee/employee_login.html",{
+        "message":"Logged Out"
+    })
+
+def employee_index_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('employee_login'))
+    return render(request,"bank/employee/employee_dashboard.html")
+
+def deposit_view(request):
+    if request.method=="POST":
+        recipient_a_id=int(request.POST["recipientAccountID"])
+        sender_account_id=int(request.POST["senderAccountID"])
+        amount=int(request.POST["depositAmount"])
+        Purpose=request.POST["purpose"]
+
+        #check if valid accounts
+        with connection.cursor() as cursor:
+            cursor.execute('select * from account where AccountID = %s or AccountID=%s',[sender_account_id,recipient_a_id])
+            accounts=cursor.fetchall()
+            if len(accounts)>1:
+                cursor.execute('UPDATE account SET balance = balance + %s WHERE AccountID = %s',[amount,recipient_a_id])
+                return HttpResponseRedirect(reverse('employee_dashboard'))
+            else:
+                return render(request,"bank/employee/deposit.html",{"message":"Invalid Account Numbers"})
+    return render(request,"bank/employee/deposit.html")
+
+def withdrawal_view(request):
+    if request.method=="POST":
+        a_id=int(request.POST["accountNumber"])
+        pin=int(request.POST["pin"])
+        withdrawal_amount=int(request.POST["withdrawalAmount"])
+        with connection.cursor() as cursor:
+            cursor.execute('select AccountPin,Balance from Account where AccountID= %s',[a_id])
+            result=cursor.fetchone()
+            r_pin=result[0]
+            balance=result[1]
+            if result is None:
+                message="Invalid Account Number"
+                return render(request,"bank/employee/withdrawal.html",{"message":message})
+            else:#valid account
+                if pin != r_pin:#wrong pin
+                    message="Invalid Account Pin"
+                    return render(request,"bank/employee/withdrawal.html",{"message":message})
+                else:
+                    if withdrawal_amount>balance:
+                        message="Insufficient Account Balance"
+                        return render(request,"bank/employee/withdrawal.html",{"message":message})
+                    else:
+                        cursor.execute('update account set Balance=%s where AccountId=%s',[balance-withdrawal_amount,a_id])
+                        message="Withdrawal sucess"
+                        return render(request,"bank/employee/withdrawal.html",{"message":message})
+    return render(request,"bank/employee/withdrawal.html")
+
+
+def review_loan_applications_view(request):
+    with connection.cursor() as cursor:
+        cursor.execute('select * from loan_applications where status=%s',["pending"])
+        applications=cursor.fetchall()
+        print(applications)
+    return render(request,"bank/employee/loan_applications.html",{"applications":applications})
+
+
+def approve_application_view(request, application_id):
+     with connection.cursor() as cursor:   
+
+        # Perform the approval logic (modify this as needed)
+        query = "UPDATE loan_applications SET status=%s WHERE application_id = %s"
+        cursor.execute(query, ("approved",application_id,))
+
+        return HttpResponseRedirect(reverse('review_loan_applications'))
+
+
+def reject_application_view(request, application_id):
+        with connection.cursor() as cursor:
+
+            # Perform the rejection logic (modify this as needed)
+            query = "UPDATE loan_applications SET status=%s WHERE application_id = %s"
+            cursor.execute(query, ("rejected",application_id,))
+
+        return HttpResponseRedirect(reverse('review_loan_applications'))
+
+
+

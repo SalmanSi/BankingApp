@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Applications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .loan-applications-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pdf-link, .approve-link, .reject-link {
+            color: #3498db;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="loan-applications-container">
+        <h2>Loan Applications</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Application ID</th>
+                    <th>Loan Amount</th>
+                    <th>Date Applied</th>
+                    <th>Applicant Account ID</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.0 }}</td>
+                        <td>{{ application.1 }}</td>
+                        <td>{{ application.2 }}</td>
+                        <td>{{ application.3 }}</td>
+                        <td>{{ application.5}}</td>
+                        <td>
+                            <a class="pdf-link" href="/view_pdf/{{ application.0 }}" target="_blank">View PDF</a>
+                            <a class="approve-link" href="/approve_application/{{ application.0 }}">Approve</a>
+                            <a class="reject-link" href="/reject_application/{{ application.0 }}">Reject</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+<a href="{%url 'employee_dashboard'%}">Dashboard</a>
+</html>
