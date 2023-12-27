@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow: hidden;
+    }
+
+    .vertical-navbar {
+      display: flex;
+      flex-direction: row;
+      background-color: black;
+      width: auto;
+      height: 10vh;
+      padding: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav-button {
+      color: white;
+      max-width: fit-content;
+      border-radius: 12px;
+      background-color: #000000;
+      border: none;
+      padding: 8px;
+      margin: 20px;
+      font-size: 18px;
+      cursor: pointer;
+      border: 1px solid rgb(188, 188, 188);
+    }
+
+    .nav-button:hover {
+      background-color: #0729b3;
+    }
+
+    .login {
+      display: flex;
+      flex-direction: column;
+      max-width: 100vw;
+      height: 80vh;
+      background-color: aqua;
+      align-items: start;
+      justify-content: center;
+      background-image: url("C:\\Users\\admin\\Desktop\\DBS project\\BankingApp\\front_end\\DBS-Project\\src\\images\\Bank2.webp");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    .login button {
+      padding: 10px;
+      margin: 20px;
+      font-weight: bold;
+      font-size: larger;
+      background-color: transparent;
+      border-radius: 12px;
+      border: none;
+      color: white;
+    }
+
+    .login button:hover {
+      background-color: #0729b3;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(94, 94, 94, 0.934);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-form {
+      background: rgb(31, 125, 144);
+      width: 25vw;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .login-form label {
+      margin-bottom: 8px;
+    }
+
+    .login-form input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+
+    .login-form button {
+      color: black;
+      margin-right: 10px;
+    }
+
+    .reg-form {
+      background: rgb(31, 125, 144);
+      width: 25vw;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reg-form label {
+      margin-bottom: 8px;
+    }
+
+    .reg-form input {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+
+    .reg-form select {
+      width: 90%;
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+
+    .reg-form button {
+      color: black;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="vertical-navbar">
+    <button class="nav-button">Home</button>
+    <button class="nav-button">About Us</button>
+    <button class="nav-button">Contact</button>
+  </div>
+
+  <div class="login">
+    <button onclick="handleClientLoginClick()">Client</button>
+    <button onclick="handleEmployeeLoginClick()">Employee</button>
+  </div>
+
+  <div id="clientLoginForm" class="overlay">
+    <div class="login-form">
+      <h2>Login Form</h2>
+      <form onsubmit="handleClientLoginFormSubmit()">
+        <label for="accountNumber">Account Number:</label>
+        <input
+          type="text"
+          id="accountNumber"
+          name="accountNumber"
+          value="{accountId}"
+          onchange="handleAccountNumberChange()"
+          required
+        />
+
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value="{password}"
+          onchange="handlePasswordChange()"
+          required
+        />
+
+        <button type="submit" onclick="handleClientLoginClick()">Login</button>
+        <button type="button" onclick="handleClientModalClose()">
+          Close
+        </button>
+        <button type="button" onclick="handleRegistrationClick()">
+          Register
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="registrationForm" class="overlay">
+    <div class="reg-form">
+      <h2>Registration Form</h2>
+      <form onsubmit="handleRegistrationFormSubmit()">
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value="{registrationData.username}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        />
+
+        <label for="pass">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="pass"
+          value="{registrationData.pass}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        />
+
+        <label for="email">Email:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value="{registrationData.email}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        />
+
+        <label for="firstName">First Name:</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          value="{registrationData.firstName}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        />
+
+        <label for="lastName">Last Name:</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          value="{registrationData.lastName}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        />
+
+        <label for="branch">Branch:</label>
+        <select
+          id="branch"
+          name="branch"
+          value="{registrationData.branch}"
+          onchange="handleRegistrationFieldChange()"
+          required
+        >
+          <option value="">Select Branch</option>
+          <option value="Clifton">Clifton</option>
+          <option value="Gulberg">Gulberg</option>
+          <option value="F-8">F-8</option>
+          <option value="Saddar">Saddar</option>
+          <option value="D Ground">D Ground</option>
+        </select>
+
+        {/* Add more registration form fields as needed */}
+
+        <button type="submit" onclick="handleRegistrationClick()">Register</button>
+        <button type="button" onclick="handleRegistrationModalClose()">
+          Close
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Define your JavaScript functions here
+    function handleClientLoginClick() {
+      // Implement the logic for handling client login click
+    }
+
+    function handleEmployeeLoginClick() {
+      // Implement the logic for handling employee login click
+    }
+
+    function handleClientLoginFormSubmit() {
+      // Implement the logic for handling client login form submission
+    }
+
+    function handleAccountNumberChange() {
+      // Implement the logic for handling account number change
+    }
+
+    function handlePasswordChange() {
+      // Implement the logic for handling password change
+    }
+
+    function handleClientModalClose() {
+      // Implement the logic for closing the client login modal
+    }
+
+    function handleRegistrationClick() {
+      // Implement the logic for handling registration click
+    }
+
+    function handleRegistrationFormSubmit() {
+      // Implement the logic for handling registration form submission
+    }
+
+    function handleRegistrationFieldChange() {
+      // Implement the logic for handling registration form field change
+    }
+
+    function handleRegistrationModalClose() {
+      // Implement the logic for closing the registration modal
+    }
+  </script>
+</body>
+</html>

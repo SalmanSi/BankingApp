@@ -44,6 +44,22 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .dashboard-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 8px 16px;  /* Adjust padding to change button size */
+            text-decoration: none;
+            color: #fff;
+            background-color: #000;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;  /* Adjust font size to change button size */
+        }
+
+        .dashboard-button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +86,6 @@
         </form>
     </div>
 </body>
-<a href="{%url 'employee_dashboard'%}">Dashboard</a>
+<a href="{% url 'employee_dashboard' %}" class="dashboard-button">Dashboard</a>
 
 </html>

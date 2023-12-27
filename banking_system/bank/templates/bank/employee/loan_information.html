@@ -1,43 +1,95 @@
-<!-- bank/employee/loan_information.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Information</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #428bca;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #428bca;
+            color: #fff;
+        }
+
+        a.button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #000;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: center; /* Center text */
+        }
+
+        a.button:hover {
+            background-color: #333;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Loan Information</h1>
+    <h1>Loan Information</h1>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Loan ID</th>
-            <th>Amount</th>
-            <th>Interest Rate</th>
-            <th>Date Approved</th>
-            <th>Return Date</th>
-            <th>Account ID</th>
-            <th>Payment Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for loan in loans %}
+    <table>
+        <thead>
             <tr>
-                <td>{{ loan.0 }}</td>   {# Accessing data using index 0 for the first element in the tuple #}
-                <td>{{ loan.1 }}</td>   {# Accessing data using index 1 for the second element in the tuple #}
-                <td>{{ loan.2 }}</td>
-                <td>{{ loan.3 }}</td>
-                <td>{{ loan.6 }}</td>
-                <td>{{ loan.4 }}</td>
-                <td>{{ loan.5 }}</td>
+                <th>Loan ID</th>
+                <th>Amount</th>
+                <th>Interest Rate</th>
+                <th>Date Approved</th>
+                <th>Return Date</th>
+                <th>Account ID</th>
+                <th>Payment Status</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.0 }}</td>
+                    <td>{{ loan.1 }}</td>
+                    <td>{{ loan.2 }}</td>
+                    <td>{{ loan.3 }}</td>
+                    <td>{{ loan.6 }}</td>
+                    <td>{{ loan.4 }}</td>
+                    <td>{{ loan.5 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'employee_dashboard' %}" class="button">Dashboard</a>
 
 </body>
-<a href="{% url 'employee_dashboard' %}">Dashboard</a>
 </html>

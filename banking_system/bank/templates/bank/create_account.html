@@ -1,28 +1,126 @@
-<!-- create_account.html -->
-<form action="{% url 'create_account' %}" method="post">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    {% csrf_token %}
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    <label for="id_branch">Select a Branch:</label>
-    <select name="branch" id="id_branch">
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #428bca;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%; /* Make the button full-width */
+        }
+
+        button:hover {
+            background-color: #3071a9;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #428bca;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        a.button {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            background-color: #428bca;
+            padding: 12px 20px;
+            border-radius: 4px;
+            text-align: center;
+            width: 100%; /* Make the button full-width */
+        }
+
+        a.button:hover {
+            background-color: #3071a9;
+        }
+    </style>
+</head>
+<body>
+
+    <form action="{% url 'create_account' %}" method="post">
+        {% csrf_token %}
+
+        <label for="id_branch">Select a Branch:</label>
+        <select name="branch" id="id_branch">
+            {% for branch in branches %}
+                <option value="{{ branch.0 }}">{{ branch.1 }} - {{ branch.2 }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="id_pin">Enter your PIN:</label>
+        <input type="number" name="pin" id="id_pin" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Display available branches -->
+    <h2>Available Branches</h2>
+    <ul>
         {% for branch in branches %}
-            <option value="{{ branch.0 }}">{{ branch.1 }} - {{ branch.2 }}</option>
+            {% if not forloop.first %}
+                <li>ID: {{ branch.0 }} | City: {{ branch.1 }} | Town: {{ branch.2 }} | Contact: {{ branch.3 }}</li>
+            {% endif %}
         {% endfor %}
-    </select>
+    </ul>
 
-    <label for="id_pin">Enter your PIN:</label>
-    <input type="number" name="pin" id="id_pin" required>
+    <a href="{% url 'user' %}" class="button">User</a>
 
-    <button type="submit">Submit</button>
-</form>
-
-<!-- Display available branches -->
-<h2>Available Branches</h2>
-<ul>
-    {% for branch in branches %}
-        {% if not forloop.first %}
-            <li>ID: {{ branch.0 }} | City: {{ branch.1 }} | Town: {{ branch.2 }} | Contact: {{ branch.3 }}</li>
-        {%endif%}
-    {% endfor %}
-</ul>
-<a href="{% url 'user' %}">User</a>
+</body>
+</html>

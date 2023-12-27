@@ -1,17 +1,67 @@
-<!-- bank/employee/loan_information.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Information</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        h1 {
+            color: #428bca;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #428bca;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a.button {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            background-color: #428bca;
+            padding: 12px 20px;
+            border-radius: 4px;
+            text-align: center;
+            width: 100%;
+        }
+
+        a.button:hover {
+            background-color: #3071a9;
+        }
+    </style>
 </head>
 <body>
 
 <h1>Loan Information</h1>
 
-<table border="1">
+<table>
     <thead>
         <tr>
             <th>Loan ID</th>
@@ -26,11 +76,11 @@
     <tbody>
         {% for loan in loans %}
             <tr>
-                <td>{{ loan.0 }}</td>   {# Accessing data using index 0 for the first element in the tuple #}
-                <td>{{ loan.1 }}</td>   {# Accessing data using index 1 for the second element in the tuple #}
+                <td>{{ loan.0 }}</td>
+                <td>{{ loan.1 }}</td>
                 <td>{{ loan.2 }}</td>
                 <td>{{ loan.3 }}</td>
-                <td>{{ loan.6 }}</td>  
+                <td>{{ loan.6 }}</td>
                 <td>{{ loan.4 }}</td>
                 <td>{{ loan.5 }}</td>
             </tr>
@@ -38,6 +88,7 @@
     </tbody>
 </table>
 
+<a href="{% url 'user' %}" class="button">User</a>
+
 </body>
-<a href="{% url 'user' %}">User</a>
 </html>

@@ -245,6 +245,7 @@ def loan_payment_view(request):
 
 def employee_login_view(request):
     if request.method=="POST":
+        print("request received")
         username=request.POST["username"]
         password=request.POST["password"]
         with connection.cursor() as cursor:
@@ -367,3 +368,29 @@ def loan_information_view(request):
 
 
 
+def account_view(request):
+            
+    with connection.cursor() as cursor:
+        cursor.execute('select * from account_view')
+        results=cursor.fetchall()
+    return render(request,"bank/employee/freeze_account.html",{"result":results})
+
+def freeze_account_view(request,account_id):
+    if request.method=="POST":
+        with connection.cursor() as cursor:
+            cursor.execute('update account set Status =%s where AccountID=%s',["inactive",account_id])
+            
+    with connection.cursor() as cursor:
+        cursor.execute('select * from account_view')
+        results=cursor.fetchall()
+    return render(request,"bank/employee/freeze_account.html",{"result":results})
+
+def unfreeze_account_view(request,account_id):
+    if request.method=="POST":
+        with connection.cursor() as cursor:
+            cursor.execute('update account set Status =%s where AccountID=%s',["active",account_id])
+            
+    with connection.cursor() as cursor:
+        cursor.execute('select * from account_view')
+        results=cursor.fetchall()
+    return render(request,"bank/employee/freeze_account.html",{"result":results})

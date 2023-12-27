@@ -27,6 +27,9 @@ urlpatterns=[
     path('approve_application/<int:application_id>/', views.approve_application_view, name='approve_application'),
     path('reject_application/<int:application_id>/', views.reject_application_view, name='reject_application'),
     path('employee/dashboard/loan/information',views.loan_information_view,name="loan_information"),
-
+    path('employee/dashboard/freezeAccount',views.account_view,name="view_account"),
+    path('freeze_account/<int:account_id>/', views.freeze_account_view, name='freeze_account'),
+    path('unfreeze_account/<int:account_id>/', views.unfreeze_account_view, name='unfreeze_account'),
+    #path("employee/customers",views.see_customers_view,name="customer_view")
 
 ]
