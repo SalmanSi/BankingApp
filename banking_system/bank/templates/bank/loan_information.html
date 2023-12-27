@@ -1,0 +1,43 @@
+<!-- bank/employee/loan_information.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Information</title>
+</head>
+<body>
+
+<h1>Loan Information</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Loan ID</th>
+            <th>Amount</th>
+            <th>Interest Rate</th>
+            <th>Date Approved</th>
+            <th>Return Date</th>
+            <th>Account ID</th>
+            <th>Payment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for loan in loans %}
+            <tr>
+                <td>{{ loan.0 }}</td>   {# Accessing data using index 0 for the first element in the tuple #}
+                <td>{{ loan.1 }}</td>   {# Accessing data using index 1 for the second element in the tuple #}
+                <td>{{ loan.2 }}</td>
+                <td>{{ loan.3 }}</td>
+                <td>{{ loan.6 }}</td>  
+                <td>{{ loan.4 }}</td>
+                <td>{{ loan.5 }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+<a href="{% url 'user' %}">User</a>
+</html>

@@ -8,7 +8,7 @@
 <body>
 
     {% if message %}
-    <p>Your loan application has been submitted successfully. We will review it shortly.</p>
+    <p>{{message}}</p>
     {% else %}
     <h1>Loan Application</h1>
 
@@ -18,10 +18,9 @@
         <label for="loan_amount">Loan Amount:</label>
         <input type="number" name="loan_amount" id="loan_amount" required>
 
-        <br>
-
-        <label for="income_proof">Proof of Income (PDF):</label>
-        <input type="file" name="income_proof" id="income_proof" accept=".pdf" required>
+        <br>    
+        <label for="returnDate">Return Date:</label>
+        <input type="date" name="returnDate" id="returnDate" required>
 
         <br>
 

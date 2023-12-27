@@ -1,6 +1,10 @@
+<!-- bank/transaction_details.html -->
+
 {% extends 'bank/layout.html' %}
 
 {% block body %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +14,8 @@
 
     <h1>Transaction Details</h1>
 
-    {% if zipped_data %}
+    {% if recipient_list_sent %}
+        <h2>Sent Transactions</h2>
         <table border="1">
             <thead>
                 <tr>
@@ -24,13 +29,11 @@
                     <th>Recipient Name</th>
                     <th>Location</th>
                     <th>Purpose</th>
-  
                     <!-- Add more headers based on your transaction details -->
                 </tr>
             </thead>
             <tbody>
-                {% for data in zipped_data %}
-                {# Access data.0 for transaction and data.1 for recipient_name #}
+                {% for data in recipient_list_sent %}
                     <tr>
                         <td>{{ data.0.0 }}</td>
                         <td>{{ data.0.1 }}</td>
@@ -42,16 +45,57 @@
                         <td>{{ data.1 }}</td>
                         <td>{{ data.0.7 }}</td>
                         <td>{{ data.0.8 }}</td>
-
                         <!-- Add more cells based on your transaction details -->
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>No transactions found.</p>
+        <p>No sent transactions found.</p>
     {% endif %}
 
+    {% if recipient_list_received %}
+        <h2>Received Transactions</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Account ID</th>
+                    <th>Amount</th>
+                    <th>Time</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Recipient ID</th>
+                    <th>Recipient Name</th>
+                    <th>Location</th>
+                    <th>Purpose</th>
+                    <!-- Add more headers based on your transaction details -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in recipient_list_received %}
+                    <tr>
+                        <td>{{ data.0.0 }}</td>
+                        <td>{{ data.0.1 }}</td>
+                        <td>{{ data.0.2 }}</td>
+                        <td>{{ data.0.3 }}</td>
+                        <td>{{ data.0.4 }}</td>
+                        <td>{{ data.0.5 }}</td>
+                        <td>{{ data.0.6 }}</td>
+                        <td>{{ data.1 }}</td>
+                        <td>{{ data.0.7 }}</td>
+                        <td>{{ data.0.8 }}</td>
+                        <!-- Add more cells based on your transaction details -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No received transactions found.</p>
+    {% endif %}
+
+    <a href="{% url 'user' %}">User</a>
+
 </body>
-<a href="{% url 'user' %}">User</a>
+</html>
 {% endblock %}

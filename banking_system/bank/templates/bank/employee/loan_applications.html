@@ -53,6 +53,7 @@
                     <th>Application ID</th>
                     <th>Loan Amount</th>
                     <th>Date Applied</th>
+                    <th>Return Date</th>
                     <th>Applicant Account ID</th>
                     <th>Description</th>
                     <th>Actions</th>
@@ -64,8 +65,9 @@
                         <td>{{ application.0 }}</td>
                         <td>{{ application.1 }}</td>
                         <td>{{ application.2 }}</td>
+                        <td>{{ application.7 }}</td>  {# Assuming return date is at index 4, adjust accordingly #}
                         <td>{{ application.3 }}</td>
-                        <td>{{ application.5}}</td>
+                        <td>{{ application.5 }}</td>
                         <td>
                             <a class="pdf-link" href="/view_pdf/{{ application.0 }}" target="_blank">View PDF</a>
                             <a class="approve-link" href="/approve_application/{{ application.0 }}">Approve</a>
@@ -76,6 +78,6 @@
             </tbody>
         </table>
     </div>
+    <a href="{% url 'employee_dashboard' %}">Dashboard</a>
 </body>
-<a href="{%url 'employee_dashboard'%}">Dashboard</a>
 </html>

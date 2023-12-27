@@ -27,6 +27,7 @@ def get_username_for_valid_aid(a_id):
         return recipient_u_name
     
 
+
     '''
         # # with connection.cursor() as cursor:
     # #     cursor.execute('insert into auth_user (password,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)',['salman123',0,"Siddiq Khan","Siddiq","Khan","admin@gmail.com",1,1,timezone.now()])

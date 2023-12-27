@@ -98,20 +98,32 @@ def account_details_view(request):
         "detail": detail
     })
 
-
 def transaction_details_view(request):
-    u_id=request.user.id
-    recipient_list=[]
+    u_id = request.user.id
+    recipient_list_sent = []
+    recipient_list_received = []
+    a_id = utils.get_account_id(u_id)
+
     with connection.cursor() as cursor:
-        cursor.execute("select account_AccountID from auth_user_has_account where auth_user_id=%s",[u_id])
-        a_id=cursor.fetchone()
-        cursor.execute("select * from transaction where account_AccountID=%s",[a_id])
-        transactions=cursor.fetchall()
+        cursor.execute("SELECT * FROM transaction WHERE account_AccountID = %s OR RecipientID = %s", [a_id, a_id])
+        transactions = cursor.fetchall()
+
         for transaction in transactions:
-            recipient_account_id=transaction[6]
-            recipient_list.append(utils.get_username_for_valid_aid(recipient_account_id)[0])
-        zipped_data = zip(transactions, recipient_list)
-    return render(request,'bank/transaction_details.html',{"zipped_data":zipped_data})
+            recipient_account_id = transaction[6]
+            recipient_username = utils.get_username_for_valid_aid(recipient_account_id)[0]
+
+            if transaction[1] == a_id:
+                # Sent transaction
+                recipient_list_sent.append((transaction, recipient_username))
+            elif recipient_account_id == a_id:
+                # Received transaction
+                recipient_list_received.append((transaction, recipient_username))
+
+    return render(request, 'bank/transaction_details.html', {
+        "recipient_list_sent": recipient_list_sent,
+        "recipient_list_received": recipient_list_received,
+    })
+
 
 def transfer_view(request):
     if request.method=="POST":
@@ -171,16 +183,64 @@ def confirm_transfer_view(request):
 def submit_loan_application_view(request):
     if request.method=="POST":
         amount=int(request.POST.get("loan_amount"))
-        proof_of_income=request.FILES.get("income_proof")
         description=request.POST.get("additional_info")
+        rdate=request.POST.get("returnDate")
         u_id=request.user.id 
         a_id=utils.get_account_id(u_id)  
         with connection.cursor() as cursor:
-            #add application 
-            cursor.execute('insert into loan_applications(Amount,account_AccountID,files,description) values(%s,%s,%s,%s)',[amount,a_id,proof_of_income,description]) 
-            return render(request,"bank/submit_loan_application.html",{"message":"Loan Applied"})
+            cursor.execute('select * from loan_applications where account_AccountID=%s and status=%s',[a_id,"pending"])
+            applications=cursor.fetchone()
+            if applications is not None:# already applied and pending
+                message="Already pending application, Cant Apply more"
+                print(applications)
+                return render(request,"bank/submit_loan_application.html",{"message":message})
+            else:
+                #add application 
+                cursor.execute('insert into loan_applications(Amount,account_AccountID,description,ReturnDate) values(%s,%s,%s,%s)',[amount,a_id,description,rdate]) 
+                return render(request,"bank/submit_loan_application.html",{"message":"Loan Applied Sucessfully"})
+
+            
     return render(request,"bank/submit_loan_application.html")
 
+def cus_loan_information(request):
+    u_id=request.user.id
+    a_id=utils.get_account_id(u_id)
+    with connection.cursor() as cursor:
+        cursor.execute('select * from loans where account_AccountID=%s',[a_id])
+        loans=cursor.fetchall()
+        return render(request,"bank/loan_information.html",{"loans":loans})
+
+
+
+def loan_payment_view(request):
+    if request.method=="POST":
+        u_id=request.user.id
+        a_id=utils.get_account_id(u_id)
+        l_id=request.POST["loanId"]
+        amount_to_pay=int(request.POST["amount"])
+        with connection.cursor() as cursor:
+            cursor.execute('select amount from loans where amount >%s and account_AccountID=%s and loanID=%s',[0,a_id,l_id])
+            loan=cursor.fetchone()
+            if loan is not None and loan[0] >0: # loan exist for that user
+                balance=utils.get_balance(a_id)
+                if balance<amount_to_pay:
+                    return render(request,"bank/loan_payment.html",{"message":"Insufficient Balance"})
+                else:
+                    loan_amount=loan[0]
+                    if amount_to_pay>loan_amount:
+                        amount_to_pay=loan_amount
+                    #start
+                    balance=balance-amount_to_pay   
+                    loan_amount-=amount_to_pay
+                    cursor.execute('update account set Balance=%s where AccountID=%s',[balance,a_id])
+                    cursor.execute('update loans set Amount =%s where loanID=%s',[loan_amount,l_id])      
+
+                    return render(request,"bank/loan_payment.html",{"message":"Loan Payment Sucessful"})
+            else:
+                message="Loan does not exist"
+                return render(request,"bank/loan_payment.html",{"message":message})
+
+    return render(request,"bank/loan_payment.html")
 # employee funtionality
 
 def employee_login_view(request):
@@ -271,11 +331,20 @@ def review_loan_applications_view(request):
 
 def approve_application_view(request, application_id):
      with connection.cursor() as cursor:   
-
+        # get account id from application id
+        cursor.execute('select account_AccountID from loan_applications where application_id=%s',[application_id])
+        a_id=cursor.fetchone()[0]
+        #get loan amount
+        cursor.execute('select Amount from loan_applications where application_id=%s',[application_id])
+        loan_amount=cursor.fetchone()[0]       
         # Perform the approval logic (modify this as needed)
         query = "UPDATE loan_applications SET status=%s WHERE application_id = %s"
         cursor.execute(query, ("approved",application_id,))
-
+        #old balance
+        cursor.execute('select Balance from account where AccountID=%s ',[a_id])
+        balance=cursor.fetchone()[0]
+        #add balance    
+        cursor.execute('update account set Balance=%s where AccountID=%s',[balance+loan_amount,a_id])
         return HttpResponseRedirect(reverse('review_loan_applications'))
 
 
@@ -287,6 +356,14 @@ def reject_application_view(request, application_id):
             cursor.execute(query, ("rejected",application_id,))
 
         return HttpResponseRedirect(reverse('review_loan_applications'))
+
+
+def loan_information_view(request):
+
+    with connection.cursor() as cursor:
+        cursor.execute('select * from loans')
+        loans=cursor.fetchall()
+    return render(request,"bank/employee/loan_information.html",{"loans":loans})
 
 
 
