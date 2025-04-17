@@ -5,6 +5,4 @@ A semester‑project Django app that lives and breathes MySQL. I modeled custome
 **Highlights**  
 - **Raw SQL & Stored Procs:** Everything from account creation to fund transfers runs inside MySQL for speed and clarity.  
 - **Schema First:** Clear tables for branches, customers, accounts and transactions, with foreign keys gluing it all together.  
-- **Easy Setup:** Import the SQL dump in `/Database/`, tweak your `settings.py`, then run Django’s server—no fuss.
 
-Enjoy poking around the SQL code!
